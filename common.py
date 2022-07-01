@@ -10,7 +10,7 @@ async def print_incoming_messages(websocket):
         print(f'[Other] {message}')
 
 
-async def respond_to_input(websocket):
+async def send_input(websocket):
     while True:
         msg = await aioconsole.ainput()
         print (f'\033[1A[You] {msg}\033[K') # Control Sequence. Replaces the printed input line.

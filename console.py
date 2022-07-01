@@ -3,7 +3,7 @@ import asyncio
 import sys
 import websockets
 
-from common import print_incoming_messages, respond_to_input
+from common import print_incoming_messages, send_input
 
 
 HOST = 'jacks-macbook-pro.local' # Could be 'localhost'
@@ -14,7 +14,7 @@ async def send_and_receive_messages(websocket):
         print('=== Connected. ===')
         await asyncio.gather( # Do multiple things at once.
             print_incoming_messages(websocket), 
-            respond_to_input(websocket)
+            send_input(websocket)
         )
 
     except Exception as e:
