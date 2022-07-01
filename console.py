@@ -25,7 +25,7 @@ async def send_and_receive_messages(websocket):
 
 def help():
     print('Unrecognized or missing command line argument: ')
-    print('Use send mode with "send" or "s", and use receive mode with "receive" or "r".')
+    print('Use send mode with "--send" or "-s", and use receive mode with "--receive" or "-r".')
     print('Ex: python3.10 console.py s')
     exit(1)
 
@@ -35,11 +35,11 @@ async def main():
         help()
 
     match sys.argv[1] or "none":
-        case 'receive' | 'r': 
+        case '--receive' | '-r': 
             print("=== Awaiting Connection... ===")
             async with websockets.serve(send_and_receive_messages, '', 8001): # On local machine, navigating to http://jacks-macbook-pro.local:8001 does something interesting.
                 await asyncio.Future()  # run forever
-        case 'send' | 's':
+        case '--send' | '-s':
             print(f'=== Attempting to Connect to {HOST}... ===')
             async with websockets.connect(f'ws://{HOST}:8001/') as websocket:
                 await send_and_receive_messages(websocket)
