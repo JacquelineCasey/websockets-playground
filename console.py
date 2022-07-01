@@ -16,7 +16,6 @@ async def send_and_receive_messages(websocket):
             print_incoming_messages(websocket), 
             send_input(websocket)
         )
-
     except Exception as e:
         print("=== Something went wrong! ===")
         print(e.with_traceback())
