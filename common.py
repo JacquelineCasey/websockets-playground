@@ -19,7 +19,7 @@ async def print_incoming_messages(websocket):
             # raise QuitException("Other ran :quit.")
             return Exception("Other ran :quit")
         print(f'{BRIGHT_GREEN}[Other]{RESET_COLOR} {msg}')
-        # os.system(f'say {msg}')
+        os.system(f'say {msg}')
 
 async def redirect_console_input(input_handler):
     while True:
