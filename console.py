@@ -32,7 +32,7 @@ async def send_and_receive_messages(websocket, keep_alive = None):
     print('=== Connected. ===')
     print(f'{BRIGHT_RED}Note:{RESET_COLOR} End the session by typing \":quit\"')
 
-    receive_task = asyncio.gather(print_incoming_messages(websocket))
+    receive_task = asyncio.create_task(print_incoming_messages(websocket))
 
     def kill_server():
         if keep_alive:
@@ -48,15 +48,8 @@ async def send_and_receive_messages(websocket, keep_alive = None):
 
     input_handler.websocket = websocket
 
-    try:
-        await receive_task # side effect: releases exception immediately
-    except QuitException:
-        print('=== Exiting Program ===')
-        kill_server()
-    except Exception as e:
-        print("=== Something went wrong! ===")
-        print_exc(e)
-        print("=== End Error Message ===")
+    await receive_task
+
 
 
 def help():
@@ -76,10 +69,12 @@ async def main():
 
             async with websockets.serve(lambda ws: send_and_receive_messages(ws, keep_alive), '', 8001): # On local machine, navigating to http://jacks-macbook-pro.local:8001 does something interesting.
                 await keep_alive  # run until keep_alive.set_result()
+                print('=== Exiting Program ===')
         case '--send' | '-s':
             print(f'=== Attempting to Connect to {HOST}... ===')
             async with websockets.connect(f'ws://{HOST}:8001/') as websocket:
                 await send_and_receive_messages(websocket)
+                print('=== Exiting Program ===')
         case _:
             help()
 
