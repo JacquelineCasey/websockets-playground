@@ -37,7 +37,7 @@ async def main():
     if len(sys.argv) < 2:
         help()
 
-    match sys.argv[1] or "none":
+    match sys.argv[1]:
         case '--receive' | '-r': 
             print("=== Awaiting Connection... ===")
             keep_alive = asyncio.Future()
