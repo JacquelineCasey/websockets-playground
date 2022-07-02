@@ -1,6 +1,6 @@
 
 import aioconsole # Async Input library
-
+import os
 
 class QuitException(Exception):
     pass
@@ -16,14 +16,12 @@ async def print_incoming_messages(websocket):
     async for msg in websocket:
         if msg == SHUTDOWN_CODE:
             print(SHUTDOWN_CODE)
-            raise QuitException("Other ran :quit.")
+            # raise QuitException("Other ran :quit.")
+            return Exception("Other ran :quit")
         print(f'{BRIGHT_GREEN}[Other]{RESET_COLOR} {msg}')
+        # os.system(f'say {msg}')
 
-async def send_input(websocket):
+async def redirect_console_input(input_handler):
     while True:
         msg = await aioconsole.ainput()
-        if (msg == ':quit'):
-            await websocket.send(SHUTDOWN_CODE)
-            raise QuitException("User ran :quit.")
-        print (f'\033[1A{BRIGHT_BLUE}[You]{RESET_COLOR} {msg}\033[K') # Control Sequence replaces the printed input line.
-        await websocket.send(msg)
+        await input_handler(msg)

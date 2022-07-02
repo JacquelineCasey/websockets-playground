@@ -1,6 +1,7 @@
 
 import asyncio
 import sys
+from traceback import print_exc
 import websockets
 
 from common import *
@@ -9,23 +10,54 @@ from common import *
 HOST = 'jacks-macbook-pro.local' # Could be 'localhost'
 
 
-async def send_and_receive_messages(websocket, keep_alive = None):
-    try:
-        print('=== Connected. ===')
-        print(f'{BRIGHT_RED}Note:{RESET_COLOR} End the session by typing \":quit\"')
-        await asyncio.gather( # Do multiple things at once. Any error is raised immediately
-            print_incoming_messages(websocket), 
-            send_input(websocket),
-        )
-    except QuitException:
-        print('=== Exiting Program ===')
-    except Exception as e:
-        print("=== Something went wrong! ===")
-        print(e.with_traceback())
-        print("=== End Error Message ===")
-    finally: # Quit the server after first websocket dies for any reason.
+class InputHandler():
+    websocket = None
+    task = None
+    quit_handler = None
+
+    async def handle_input(self, msg):
+        if (msg == ':quit'):
+            if self.websocket.open:
+                await self.websocket.send(SHUTDOWN_CODE)
+            self.quit_handler()
+            return
+        print (f'\033[1A{BRIGHT_BLUE}[You]{RESET_COLOR} {msg}\033[K') # Control Sequence replaces the printed input line.
+        if self.websocket.open:
+            await self.websocket.send(msg)
+    
+    
+input_handler = None
+
+async def send_and_receive_messages(websocket, keep_alive = None): 
+    print('=== Connected. ===')
+    print(f'{BRIGHT_RED}Note:{RESET_COLOR} End the session by typing \":quit\"')
+
+    receive_task = asyncio.gather(print_incoming_messages(websocket))
+
+    def kill_server():
         if keep_alive:
             keep_alive.set_result(None)
+            receive_task.cancel()
+
+    # Ensure that the input is printed on the screen and sent to partner
+    global input_handler
+    if not input_handler:
+        input_handler = InputHandler()
+        asyncio.create_task(redirect_console_input(input_handler.handle_input))
+        input_handler.quit_handler = kill_server
+
+    input_handler.websocket = websocket
+
+    try:
+        await receive_task # side effect: releases exception immediately
+    except QuitException:
+        print('=== Exiting Program ===')
+        kill_server()
+    except Exception as e:
+        print("=== Something went wrong! ===")
+        print_exc(e)
+        print("=== End Error Message ===")
+
 
 def help():
     print('Unrecognized or missing command line argument: ')
