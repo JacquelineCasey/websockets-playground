@@ -68,10 +68,10 @@ class Connection():
 
 async def main():
     def on_receive_msg(msg, connection: Connection):
-            print(f'[{connection.id}] received {msg}')
-            connection.send_message(f'echo {msg}')
-            if msg == 'exit':
-                connection.end_connection()
+        print(f'[{connection.id}] received {msg}')
+        connection.send_message(f'echo {msg}')
+        if msg == 'exit':
+            connection.end_connection()
 
     def on_closed(connection: Connection):
         print(f'[{connection.id}] Connection Closed')
