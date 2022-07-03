@@ -11,7 +11,7 @@ async def periodic_messages():
         await asyncio.sleep(10)
 
 async def main():
-    await asyncio.gather(connection.main(), periodic_messages())
+    await asyncio.gather(periodic_messages())
 
-
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())
