@@ -1,1 +1,1 @@
-web: gunicorn setup
+web: python3 -u setup.py

@@ -15,8 +15,5 @@ async def main():
     await asyncio.gather(connection.main(), periodic_messages())
 
 
-print(__name__)
-sys.stdout.flush()
-
 if __name__ == '__main__':
     asyncio.run(main())
