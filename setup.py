@@ -2,16 +2,7 @@
 
 import connection
 import asyncio
-import sys
 
-
-async def periodic_messages():
-    while True:
-        print("Periodic Message")
-        await asyncio.sleep(10)
-
-async def main():
-    await asyncio.gather(periodic_messages(), connection.main())
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.run(connection.main())

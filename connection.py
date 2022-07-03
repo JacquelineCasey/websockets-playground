@@ -80,9 +80,10 @@ async def main():
         await connection.activate()
 
     port = int(os.environ.get("PORT", 8001))
-    print(f"Binding to port {port}")
+    print(f"Binding to port {port}.")
     async with websockets.serve(handle_ws, '', port):
         await asyncio.Future() # suspend indefinitely
+
 
 if __name__ == '__main__':
     asyncio.run(main())
