@@ -2,6 +2,7 @@
 import asyncio
 from traceback import print_exc
 import websockets
+import os
 
 class Connection():
     _next_id = 1
@@ -78,7 +79,9 @@ async def main():
         print(f'[{connection.id}] Connection Opened') 
         await connection.activate()
 
-    async with websockets.serve(handle_ws, '', 8001):
+    port = int(os.environ.get("PORT", 8001))
+    print(f"Binding to port {port}")
+    async with websockets.serve(handle_ws, '', port):
         await asyncio.Future() # suspend indefinitely
 
 if __name__ == '__main__':
