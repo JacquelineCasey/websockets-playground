@@ -16,16 +16,13 @@ class Connection():
         Connection._next_id += 1
 
     async def activate(self):
-        send_task = asyncio.create_task(self._send_messages())
-        receive_task = asyncio.create_task(self._receive_messages())
-        wait_closed_task = asyncio.create_task(self._wait_closed())
-        self._gathered_tasks = asyncio.gather(send_task, receive_task, wait_closed_task)
+        self._gathered_tasks = asyncio.gather(self._send_messages(), self._receive_messages(), self._wait_closed())
         try:
             await self._gathered_tasks # May be cancelled by end_connection()
         except Exception as e:
             print(f'Connection with id {self.id} encountered an exception.')
             print_exc(e)
-        except asyncio.CancelledError:
+        except asyncio.CancelledError: # Strangly not itself an Exception
             pass # We are fine with this actually. This is how the Connection shuts down.
         finally:
             self.end_connection()
