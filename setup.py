@@ -8,12 +8,10 @@ import sys
 async def periodic_messages():
     while True:
         print("Periodic Message")
-        sys.stdout.flush()
         await asyncio.sleep(10)
 
 async def main():
     await asyncio.gather(connection.main(), periodic_messages())
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+asyncio.run(main())
