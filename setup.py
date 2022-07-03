@@ -2,11 +2,13 @@
 
 import connection
 import asyncio
+import sys
 
 
 async def periodic_messages():
     while True:
         print("Periodic Message")
+        sys.stdout.flush()
         await asyncio.sleep(10)
 
 async def main():
