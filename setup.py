@@ -9,5 +9,8 @@ async def periodic_messages():
         print("Periodic Message")
         await asyncio.sleep(10)
 
+async def main():
+    await asyncio.gather(connection.main(), periodic_messages())
+
 if __name__ == '__main__':
-    asyncio.run(connection.main())
+    asyncio.run(main())
