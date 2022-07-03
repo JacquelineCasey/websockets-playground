@@ -1,1 +1,1 @@
-worker: python3 connection.py
+web: python3 setup.py
