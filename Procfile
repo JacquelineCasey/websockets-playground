@@ -1,1 +1,1 @@
-web: echo HELP
+web: python3 setup.py
