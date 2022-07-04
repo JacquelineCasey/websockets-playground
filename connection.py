@@ -69,7 +69,7 @@ async def main():
     def on_receive_msg(msg, connection: Connection):
         print(f'[{connection.id}] received {msg}')
 
-        if msg[0] == '$':
+        if msg[0] == '$': # This is really dangerous, but kinda cool.
             connection.send_message(f'{eval(msg[1:])}')
         elif msg == 'exit':
             connection.end_connection()
