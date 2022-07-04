@@ -49,6 +49,7 @@ class Connection():
     def send_message(self, msg):
         self._send_queue.put_nowait(msg)
 
+    # Ends connection immediately. Perhaps in the future we wait until all messages are sent (as an option).
     def end_connection(self):
         if not self._ended:
             self._ended = True
@@ -67,9 +68,13 @@ class Connection():
 async def main():
     def on_receive_msg(msg, connection: Connection):
         print(f'[{connection.id}] received {msg}')
-        connection.send_message(f'echo {msg}')
-        if msg == 'exit':
+
+        if msg[0] == '$':
+            connection.send_message(f'{eval(msg[1:])}')
+        elif msg == 'exit':
             connection.end_connection()
+        else:
+            connection.send_message(f'echo {msg}')
 
     def on_closed(connection: Connection):
         print(f'[{connection.id}] Connection Closed')
